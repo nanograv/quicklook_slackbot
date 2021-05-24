@@ -51,10 +51,10 @@ def flag():
         ff.write(ip_text + '\n')
         
     op_text = r"""Success! :robot_face:
-    Here's what you flagged:
+    Here's what <@{}> flagged:
     {}
     To unflag, use /unflag psr_name mjd
-    """.format(ip_text)
+    """.format(user_id, ip_text)
     
     client.chat_postMessage(
         channel=channel_id, text = op_text)
@@ -93,10 +93,10 @@ def unflag():
     os.replace("temp.txt", bad_ql_db)
         
     op_text = r"""Success! :robot_face:
-    Here's what you unflagged:
+    Here's what <@{}> unflagged:
     {}
     To flag, use /flag psr_name mjd comment
-    """.format(ip_text)
+    """.format(user_id, ip_text)
     
     client.chat_postMessage(
         channel=channel_id, text = op_text)
