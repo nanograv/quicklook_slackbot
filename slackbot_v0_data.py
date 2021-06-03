@@ -13,7 +13,10 @@ parser.add_argument("-channel", dest = 'channel', required = True, help = "Slack
 
 parser.add_argument("--datadir", default = "./", help = "Directory holding all quicklook plots (assumed to be .png)")
 parser.add_argument("--run_every", type = float, dest = 'run_every', default = 12, help = "Run this code once per given number of hours; Default = 12 hours")
-parser.add_argument("--interval", type = float, dest = 'interval', default = 12, help = "Check for new plots in the last given number of hours. Recommend setting it equal to --run_every; Default = 1 hour")
+parser.add_argument("--interval", type = float, dest = 'interval', default = 12, help = "Check for new plots in the last given number of hours. Recommend setting it equal to --run_every; Default = 12 hour")
+parser.add_argument("--cronjob", dest = 'cronjob', action = 'store_true', default = False, help = 'Flag to set whether bot is run as a Slurm/PBS job or cron job. Default: False')
+
+parser.add_argument("--test", dest = 'test', action = 'store_true', default = False, help = "Run code only once for testing.")
 
 args = parser.parse_args()
 
@@ -53,8 +56,37 @@ interval = args.interval * 3600
 channel = args.channel
 run_every = args.run_every * 3600
 
-while True:
+if not args.cronjob:
+    while True:
 
+        ql_plots = sorted(glob.glob(datadir + '/*.png'))
+
+        new_plots = np.array(())
+
+        for path in ql_plots:
+
+            if was_modified(path, interval = interval):
+                new_plots = np.append(new_plots, path)
+
+        if len(new_plots) != 0:
+
+            init_msg = r":robot_face: INCOMING! {} :robot_face:".format(datetime.datetime.now())
+            client.chat_postMessage(channel = channel, text = init_msg)
+
+            for ii, path in enumerate(new_plots):
+
+                fname = path.split('/')[-1]
+
+                client.files_upload(channels = channel, file = path, 
+                                    title = fname, init_comment = fname)
+
+        if args.test:
+            break
+        else:
+            time.sleep(run_every)
+            
+else:
+    
     ql_plots = sorted(glob.glob(datadir + '/*.png'))
 
     new_plots = np.array(())
@@ -70,10 +102,8 @@ while True:
         client.chat_postMessage(channel = channel, text = init_msg)
 
         for ii, path in enumerate(new_plots):
-            
+
             fname = path.split('/')[-1]
 
             client.files_upload(channels = channel, file = path, 
                                 title = fname, init_comment = fname)
-            
-    time.sleep(run_every)
