@@ -1,6 +1,6 @@
 import slack, os, json, time, glob, datetime, numpy as np
 from pathlib import Path
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 from flask import Flask, request, Response
 from slackeventsapi import SlackEventAdapter
 
