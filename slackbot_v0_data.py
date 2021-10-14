@@ -44,7 +44,7 @@ def was_modified(fname, interval = 60 * 60):
         return False
     
 env_path = Path('.') / '.env'
-load_dotenv(dotenv_path = env_path)
+#load_dotenv(dotenv_path = env_path)
 
 client = slack.WebClient(token = os.environ['SLACK_TOKEN'])
 
