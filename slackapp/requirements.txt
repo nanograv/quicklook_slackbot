@@ -1,0 +1,6 @@
+numpy
+slack
+slackclient
+slackeventsapi
+pathlib
+flask
