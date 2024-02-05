@@ -1,4 +1,4 @@
-# NANOGrav quicklook Slackbot
+# NANOGrav "QuickLook" Slackbot
 
 Instructions for setting up the slackbot:
 
